@@ -603,10 +603,24 @@
       osc.stop(t + 1.65); vib.stop(t + 1.65);
     }
 
-    document.querySelector('.phone-btn').addEventListener('click', e => {
-      // Create/resume AudioContext synchronously inside the gesture — required for iOS
+    function triggerRing() {
       if (!audioCtx) audioCtx = new AudioCtx();
+      // iOS unlock: play a silent buffer first
+      const unlock = audioCtx.createBuffer(1, 1, 22050);
+      const us = audioCtx.createBufferSource();
+      us.buffer = unlock; us.connect(audioCtx.destination); us.start(0);
+      // Resume then ring
       audioCtx.resume().then(() => playButtonRing());
+    }
+
+    // touchstart fires BEFORE navigation — critical for iOS
+    document.querySelector('.phone-btn').addEventListener('touchstart', e => {
+      triggerRing();
+    }, { passive: true });
+
+    // Desktop fallback
+    document.querySelector('.phone-btn').addEventListener('click', e => {
+      if (!window.ontouchstart) triggerRing();
     });
 
     // Visitor counter ticks up slowly
