@@ -574,85 +574,49 @@
       src.start(time);
     }
 
-    // BRRING = two quick clangs (double-strike analog bell)
-    function brring(ctx, time, freq, vol) {
-      clang(ctx, time,        freq, vol);
-      clang(ctx, time + 0.09, freq, vol * 0.8);
-    }
-
-    // Wobbly old phone — comedy detuned bell
-    function wobble(ctx, time, vol) {
-      const osc = ctx.createOscillator();
-      const vib = ctx.createOscillator();
-      const vG  = ctx.createGain();
-      const g   = ctx.createGain();
-      osc.type = 'sine'; osc.frequency.value = 1050;
-      vib.frequency.value = 7; vG.gain.value = 40;
-      vib.connect(vG); vG.connect(osc.frequency);
-      osc.connect(g); g.connect(ctx.destination);
-      g.gain.setValueAtTime(0, time);
-      g.gain.linearRampToValueAtTime(vol, time + 0.003);
-      g.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
-      osc.start(time); vib.start(time);
-      osc.stop(time + 0.55); vib.stop(time + 0.55);
-    }
-
-    // Full busy office sequence — 4 phones, all ringing at once
-    function playOfficeRing() {
+    // Funny one-shot ring: BRRING-BRRING then a desperate wobble
+    function playButtonRing() {
       if (!audioCtx) return;
-      const t = audioCtx.currentTime + 0.05;
+      const t = audioCtx.currentTime + 0.04;
 
-      // Front desk — loud, insistent
-      brring(audioCtx, t,       1200, 0.20);
-      brring(audioCtx, t + 2.2, 1200, 0.20);
+      // First BRRING
+      clang(audioCtx, t,        1200, 0.22);
+      clang(audioCtx, t + 0.09, 1200, 0.18);
 
-      // Mid-room phone
-      brring(audioCtx, t + 0.7, 1050, 0.11);
-      brring(audioCtx, t + 2.9, 1050, 0.11);
+      // Second BRRING
+      clang(audioCtx, t + 0.55, 1200, 0.22);
+      clang(audioCtx, t + 0.64, 1200, 0.18);
 
-      // That one annoying wobbly phone in the corner
-      wobble(audioCtx, t + 0.15, 0.08);
-      wobble(audioCtx, t + 0.24, 0.07);
-      wobble(audioCtx, t + 2.35, 0.08);
-      wobble(audioCtx, t + 2.44, 0.07);
-
-      // Distant phone — barely anyone answers it
-      brring(audioCtx, t + 1.4, 1350, 0.05);
+      // Panicked wobble — like the phone is losing its mind
+      const osc = audioCtx.createOscillator();
+      const vib = audioCtx.createOscillator();
+      const vG  = audioCtx.createGain();
+      const g   = audioCtx.createGain();
+      osc.type = 'sine'; osc.frequency.value = 1050;
+      vib.frequency.value = 12; vG.gain.value = 80; // fast, wide wobble
+      vib.connect(vG); vG.connect(osc.frequency);
+      osc.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0, t + 1.1);
+      g.gain.linearRampToValueAtTime(0.13, t + 1.11);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+      osc.start(t + 1.1); vib.start(t + 1.1);
+      osc.stop(t + 1.65); vib.stop(t + 1.65);
     }
 
     let audioStarted = false;
-    let audioMuted = false;
-
-    function scheduleNext() {
-      if (audioMuted) return;
-      setTimeout(() => {
-        if (!audioMuted) playOfficeRing();
-        scheduleNext();
-      }, 8000 + Math.random() * 4000);
-    }
 
     async function startAudio() {
       if (audioStarted) return;
       audioStarted = true;
       audioCtx = new AudioCtx();
       await audioCtx.resume();
-      playOfficeRing();
-      scheduleNext();
-      updateSoundBtn();
-    }
-
-    function updateSoundBtn() {
-      const btn = document.getElementById('sound-btn');
-      if (!btn) return;
-      btn.textContent = audioMuted ? '🔇 SOUND OFF' : '🔔 SOUND ON';
-      btn.style.opacity = audioMuted ? '0.4' : '1';
     }
 
     document.addEventListener('pointerdown', startAudio, { once: true });
 
-    // Ring on submit button click
-    document.querySelector('.phone-btn').addEventListener('click', e => {
-      if (audioCtx) playOfficeRing();
+    document.querySelector('.phone-btn').addEventListener('click', async e => {
+      if (!audioStarted) await startAudio();
+      playButtonRing();
     });
 
     // Visitor counter ticks up slowly
