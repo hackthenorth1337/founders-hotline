@@ -422,31 +422,36 @@
 
     /* ── mobile ── */
     @media (max-width: 580px) {
-      .wrap        { padding: 0 20px; }
-      header       { padding: 16px 0 0; }
+      /* layout */
+      .wrap   { padding: 0 18px; }
+      header  { padding: 14px 0 0; flex-wrap: wrap; gap: 6px; }
+      main    { gap: 14px; padding: 14px 0 10px; justify-content: flex-start; }
+      footer  { flex-direction: column; align-items: flex-start; gap: 3px; padding: 10px 0 18px; }
 
-      .headline    { font-size: clamp(52px, 14vw, 72px); }
+      /* type */
+      .headline   { font-size: 13vw; line-height: 0.9; }
+      .tagline    { font-size: 13px; line-height: 1.5; }
+      .logo       { font-size: 12px; }
+      .live       { font-size: 10px; }
 
-      .tagrow      { grid-template-columns: 1fr; gap: 10px; padding-top: 14px; }
-      .badge       { display: flex; align-items: baseline; gap: 10px; text-align: left; }
-      .badge-num   { font-size: 52px; }
-      .badge-label { margin-top: 0; font-size: 11px; }
+      /* badge — inline pill instead of big number */
+      .tagrow     { grid-template-columns: 1fr; gap: 12px; padding-top: 12px; }
+      .badge      { display: flex; align-items: baseline; gap: 8px; }
+      .badge-num  { font-size: 40px; }
+      .badge-label{ font-size: 10px; margin-top: 0; }
 
-      .tagline     { font-size: 14px; }
+      /* button */
+      .phone-btn  { width: 100%; justify-content: center; font-size: 22px; padding: 16px 20px; gap: 12px; }
+      .phone-icon svg { width: 24px; height: 24px; }
 
-      main         { gap: 16px; padding: 12px 0 12px; justify-content: flex-start; padding-top: 20px; }
-
-      .phone-btn   { width: 100%; justify-content: center; font-size: 24px; padding: 18px 24px; }
-
-      footer       { flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0 20px; }
-      .netscape    { display: none; }
-      .bg-phone    { display: none; }
-
-      .stripe      { height: 18px; }
-      .marquee-wrap { padding: 4px 0; }
-      .marquee-inner { font-size: 13px; }
-
-      .new-badge   { display: none; }
+      /* decorations */
+      .stripe         { height: 16px; }
+      .marquee-wrap   { padding: 3px 0; }
+      .marquee-inner  { font-size: 12px; }
+      .bg-phone       { display: none; }
+      .netscape       { display: none; }
+      .new-badge      { display: none; }
+      .visitor        { font-size: 13px; }
     }
   </style>
 </head>
