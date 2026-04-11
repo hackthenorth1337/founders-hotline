@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founders Hotline | hack.vc</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23090909'/><path d='M68 72 C64 76 56 78 48 75 C32 68 22 54 18 38 C14 22 20 10 28 6 L40 18 L35 28 C35 28 44 50 58 56 L68 51 Z' fill='%2396f99b'/></svg>">
+
+  <!-- OG -->
+  <meta property="og:title"        content="Founders Hotline | hack.vc">
+  <meta property="og:description"  content="Drop your deck. We get back in 3 days. Every time.">
+  <meta property="og:image"        content="preview.svg">
+  <meta property="og:type"         content="website">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Founders Hotline | hack.vc">
+  <meta name="twitter:description" content="Drop your deck. We get back in 3 days. Every time.">
+  <meta name="twitter:image"       content="preview.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:     #090909;
+      --green:  #96f99b;
+      --red:    #E0001A;
+      --white:  #F0EBE1;
+      --dim:    rgba(240,235,225,0.4);
+      --border: rgba(240,235,225,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── subtle green glow ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 20%;
+      left: 30%;
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(150,249,155,0.055) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── grain ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.032;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── decorative bg phone ── */
+    .bg-phone {
+      position: fixed;
+      right: -80px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.045;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── stripes ── */
+    .stripe {
+      height: 26px;
+      flex-shrink: 0;
+      background: repeating-linear-gradient(
+        -52deg,
+        var(--green) 0,        var(--green) 26px,
+        var(--bg)    26px,
+        var(--bg)    52px
+      );
+      background-size: 74px 74px;
+      animation: slide 3s linear infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes slide {
+      from { background-position: 0 0; }
+      to   { background-position: 74px 0; }
+    }
+
+    /* ── main wrap ── */
+    .wrap {
+      flex: 1;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+    }
+
+    /* ── header ── */
+    header {
+      padding: 20px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-family: 'Courier Prime', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 0 rgba(224,0,26,0.7);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%  { box-shadow: 0 0 0 0   rgba(224,0,26,0.7); }
+      60% { box-shadow: 0 0 0 7px rgba(224,0,26,0); }
+      100%{ box-shadow: 0 0 0 0   rgba(224,0,26,0); }
+    }
+
+    /* ── main content ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px 0 8px;
+      gap: clamp(16px, 2.5vh, 28px);
+      min-height: 0;
+    }
+
+    /* ── headline ── */
+    .headline {
+      font-family: 'Passion One', sans-serif;
+      font-weight: 900;
+      font-size: clamp(68px, 13.5vh, 152px);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .headline .green {
+      color: var(--green);
+      position: relative;
+      display: inline-block;
+    }
+
+    /* glow */
+    .headline .green::after {
+      content: attr(data-t);
+      position: absolute;
+      inset: 0;
+      color: var(--green);
+      filter: blur(28px);
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .headline .period { color: var(--red); }
+
+    /* ── tagrow ── */
+    .tagrow {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: clamp(14px, 2vh, 22px);
+    }
+
+    .tagline {
+      font-size: clamp(14px, 1.8vh, 19px);
+      line-height: 1.55;
+      color: var(--white);
+      opacity: 0.75;
+    }
+
+    .tagline strong { color: var(--green); opacity: 1; font-weight: 700; }
+    .tagline em     { color: var(--dim);   font-style: italic; font-size: 0.88em; }
+
+    .badge {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .badge-num {
+      font-family: 'Passion One', sans-serif;
+      font-size: clamp(52px, 8vh, 88px);
+      line-height: 1;
+      color: var(--green);
+      letter-spacing: -0.02em;
+    }
+
+    .badge-label {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-shrink: 0;
+    }
+
+    .phone-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      background: var(--red);
+      color: #fff;
+      text-decoration: none;
+      padding: clamp(20px, 3vh, 30px) clamp(32px, 4vw, 52px);
+      font-family: 'Passion One', sans-serif;
+      font-size: clamp(28px, 4vh, 40px);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: transform 0.12s, box-shadow 0.2s;
+      box-shadow: 0 0 0 rgba(224,0,26,0);
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phone-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .phone-btn:hover {
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 8px 40px rgba(224,0,26,0.45), 0 2px 12px rgba(224,0,26,0.3);
+    }
+
+    .phone-btn:active { transform: scale(0.97); }
+
+    .phone-icon { display: flex; align-items: center; flex-shrink: 0; }
+
+    .phone-btn:hover .phone-icon {
+      animation: ring 0.5s ease;
+    }
+
+    @keyframes ring {
+      0%,100% { transform: rotate(0); }
+      20%  { transform: rotate(-20deg); }
+      40%  { transform: rotate(20deg); }
+      60%  { transform: rotate(-12deg); }
+      80%  { transform: rotate(12deg); }
+    }
+
+    .cta-note {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      line-height: 1.8;
+      opacity: 0.6;
+    }
+
+    .cta-note span {
+      display: block;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0;
+      opacity: 0.7;
+      font-size: 10px;
+    }
+
+    /* ── footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 12px 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 0.28;
+      flex-shrink: 0;
+    }
+
+    footer span {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ── entrance animations ── */
+    [data-fade] {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadein 0.5s ease forwards;
+    }
+
+    [data-fade="1"] { animation-delay: 0.05s; }
+    [data-fade="2"] { animation-delay: 0.15s; }
+    [data-fade="3"] { animation-delay: 0.28s; }
+    [data-fade="4"] { animation-delay: 0.4s;  }
+    [data-fade="5"] { animation-delay: 0.52s; }
+
+    @keyframes fadein { to { opacity: 1; transform: none; } }
+
+    /* ── mobile ── */
+    @media (max-width: 580px) {
+      .tagrow    { grid-template-columns: 1fr; gap: 14px; }
+      .badge     { display: flex; align-items: baseline; gap: 10px; text-align: left; }
+      .badge-label { margin-top: 0; }
+      .cta       { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .bg-phone  { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- decorative bg phone -->
+  <div class="bg-phone">
+    <svg width="520" height="520" viewBox="0 0 24 24" fill="#96f99b">
+      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+    </svg>
+  </div>
+
+  <div class="stripe"></div>
+
+  <div class="wrap">
+
+    <header data-fade="1">
+      <div class="logo">hack.vc</div>
+      <div class="live">
+        <div class="dot"></div>
+        Hotline Active
+      </div>
+    </header>
+
+    <main>
+      <h1 class="headline" data-fade="2">
+        FOUNDERS<br>
+        <span class="green" data-t="HOTLINE">HOTLINE</span><span class="period">.</span>
+      </h1>
+
+      <div class="tagrow" data-fade="3">
+        <p class="tagline">
+          We're so <strong>bullish on founders</strong> we actually respond.<br>
+          Drop your deck. <strong>We get back in 3 days. Every time.</strong>
+        </p>
+        <div class="badge">
+          <div class="badge-num">72</div>
+          <div class="badge-label">Hour<br>Guarantee</div>
+        </div>
+      </div>
+
+      <div class="cta" data-fade="4">
+        <a href="https://forms.gle/JrRmckncmJmLySjs8" target="_blank" class="phone-btn">
+          <span class="phone-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+          </span>
+          <span>Submit Your Deck</span>
+        </a>
+        <p class="cta-note">
+          2 mins &nbsp;·&nbsp; No NDAs &nbsp;·&nbsp; Zero gatekeepers
+          <span>*not legally binding, but we really mean it</span>
+        </p>
+      </div>
+    </main>
+
+    <footer data-fade="5">
+      <span>© 2025 hack.vc</span>
+    </footer>
+
+  </div>
+
+  <div class="stripe"></div>
+
+</body>
+</html>
