@@ -603,20 +603,10 @@
       osc.stop(t + 1.65); vib.stop(t + 1.65);
     }
 
-    let audioStarted = false;
-
-    async function startAudio() {
-      if (audioStarted) return;
-      audioStarted = true;
-      audioCtx = new AudioCtx();
-      await audioCtx.resume();
-    }
-
-    document.addEventListener('pointerdown', startAudio, { once: true });
-
-    document.querySelector('.phone-btn').addEventListener('click', async e => {
-      if (!audioStarted) await startAudio();
-      playButtonRing();
+    document.querySelector('.phone-btn').addEventListener('click', e => {
+      // Create/resume AudioContext synchronously inside the gesture — required for iOS
+      if (!audioCtx) audioCtx = new AudioCtx();
+      audioCtx.resume().then(() => playButtonRing());
     });
 
     // Visitor counter ticks up slowly
