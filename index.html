@@ -227,21 +227,6 @@
       100%{ box-shadow: 0 0 0 0   rgba(224,0,26,0); }
     }
 
-    /* ── sound toggle ── */
-    #sound-btn {
-      font-family: 'VT323', monospace;
-      font-size: 14px;
-      letter-spacing: 0.1em;
-      background: transparent;
-      border: 1px solid rgba(150,249,155,0.3);
-      color: var(--green);
-      padding: 4px 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: border-color 0.15s, opacity 0.15s;
-    }
-    #sound-btn:hover { border-color: var(--green); }
-
     /* ── new badge ── */
     .new-badge {
       display: inline-block;
@@ -485,12 +470,9 @@
 
     <header data-fade="1">
       <div class="logo">hack.vc <span class="new-badge">new</span></div>
-      <div style="display:flex;align-items:center;gap:16px;">
-        <button id="sound-btn">🔔 SOUND ON</button>
-        <div class="live">
-          <div class="dot"></div>
-          Founder Hotline Active
-        </div>
+      <div class="live">
+        <div class="dot"></div>
+        Founder Hotline Active
       </div>
     </header>
 
@@ -660,17 +642,6 @@
       btn.textContent = audioMuted ? '🔇 SOUND OFF' : '🔔 SOUND ON';
       btn.style.opacity = audioMuted ? '0.4' : '1';
     }
-
-    document.getElementById('sound-btn').addEventListener('click', async () => {
-      if (!audioStarted) {
-        await startAudio();
-      } else {
-        audioMuted = !audioMuted;
-        if (!audioMuted) { await audioCtx.resume(); playOfficeRing(); scheduleNext(); }
-        else audioCtx.suspend();
-        updateSoundBtn();
-      }
-    });
 
     document.addEventListener('pointerdown', startAudio, { once: true });
 
