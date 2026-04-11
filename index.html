@@ -650,6 +650,11 @@
 
     document.addEventListener('pointerdown', startAudio, { once: true });
 
+    // Ring on submit button click
+    document.querySelector('.phone-btn').addEventListener('click', e => {
+      if (audioCtx) playOfficeRing();
+    });
+
     // Visitor counter ticks up slowly
     let count = 8472;
     setInterval(() => {
