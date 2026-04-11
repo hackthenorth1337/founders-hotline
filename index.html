@@ -535,43 +535,70 @@
       setTimeout(() => t.remove(), 500);
     });
 
-    // Phone ringtone via Web Audio API
+    // Busy office phone ambience — Web Audio API
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
-    function playRing() {
-      if (!audioCtx) audioCtx = new AudioCtx();
-      const t = audioCtx.currentTime;
-      // Two short bursts — classic phone ring
-      [0, 0.55].forEach(offset => {
-        const o1 = audioCtx.createOscillator();
-        const o2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        o1.frequency.value = 440;
-        o2.frequency.value = 480;
-        o1.type = o2.type = 'sine';
-        o1.connect(gain); o2.connect(gain);
-        gain.connect(audioCtx.destination);
-        gain.gain.setValueAtTime(0, t + offset);
-        gain.gain.linearRampToValueAtTime(0.07, t + offset + 0.02);
-        gain.gain.setValueAtTime(0.07, t + offset + 0.3);
-        gain.gain.linearRampToValueAtTime(0, t + offset + 0.45);
-        o1.start(t + offset); o2.start(t + offset);
-        o1.stop(t + offset + 0.45); o2.stop(t + offset + 0.45);
+    // Synthesise one telephone bell strike
+    function bell(ctx, time, freq, vol) {
+      const harmonics = [1, 2.756, 5.404]; // bell partial series
+      const decays    = [0.9, 0.5, 0.3];
+      harmonics.forEach((h, i) => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq * h;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * (1 - i * 0.25), time + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + decays[i]);
+        osc.start(time);
+        osc.stop(time + decays[i] + 0.05);
       });
     }
 
-    // Ring on first interaction (browsers block autoplay before that)
-    let hasRung = false;
-    document.addEventListener('pointerdown', () => {
-      if (!hasRung) { hasRung = true; playRing(); }
-    }, { once: true });
+    // One "brring-brring" ring on a phone at given pitch & volume
+    function phoneRing(ctx, start, freq, vol) {
+      bell(ctx, start,        freq, vol);
+      bell(ctx, start + 0.08, freq, vol * 0.9); // slight echo = mechanical bell
+      bell(ctx, start + 0.52, freq, vol);
+      bell(ctx, start + 0.60, freq, vol * 0.9);
+    }
 
-    // Ring on button hover
-    document.querySelector('.phone-btn').addEventListener('mouseenter', playRing);
+    // Busy office: 2-3 phones ringing at different pitches/timings
+    function playOfficeRing() {
+      if (!audioCtx) return;
+      const t = audioCtx.currentTime + 0.05;
 
-    // Ring every ~12s to keep the hotline energy
-    setInterval(playRing, 12000);
+      // Main phone — front desk
+      phoneRing(audioCtx, t,        900,  0.055);
+      phoneRing(audioCtx, t + 4.2,  900,  0.055);
+
+      // Background phone 1 — across the room
+      phoneRing(audioCtx, t + 1.1,  760,  0.022);
+      phoneRing(audioCtx, t + 5.4,  760,  0.018);
+
+      // Background phone 2 — distant
+      phoneRing(audioCtx, t + 2.6,  840,  0.014);
+    }
+
+    // Start after first interaction (browser autoplay policy)
+    let started = false;
+    function startAudio() {
+      if (started) return;
+      started = true;
+      audioCtx = new AudioCtx();
+      playOfficeRing();
+      // Keep ringing every ~9s with slight randomness
+      setInterval(() => playOfficeRing(), 9000 + Math.random() * 3000);
+    }
+
+    document.addEventListener('pointerdown', startAudio, { once: true });
+    document.querySelector('.phone-btn').addEventListener('mouseenter', () => {
+      if (!started) startAudio();
+      else if (audioCtx) playOfficeRing();
+    });
 
     // Visitor counter ticks up slowly
     let count = 8472;
