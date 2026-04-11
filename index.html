@@ -3,24 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Founders Hotline | hack.vc</title>
+  <title>Better Call Hack | hack.vc</title>
 
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23090909'/><path d='M68 72 C64 76 56 78 48 75 C32 68 22 54 18 38 C14 22 20 10 28 6 L40 18 L35 28 C35 28 44 50 58 56 L68 51 Z' fill='%2396f99b'/></svg>">
 
-  <!-- OG -->
-  <meta property="og:title"        content="Founders Hotline | hack.vc">
-  <meta property="og:description"  content="Drop your deck. We get back in 3 days. Every time.">
+  <meta property="og:title"        content="Better Call Hack | hack.vc">
+  <meta property="og:description"  content="Drop your deck. We get back in 1 week.">
   <meta property="og:image"        content="preview.svg">
   <meta property="og:type"         content="website">
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Founders Hotline | hack.vc">
-  <meta name="twitter:description" content="Drop your deck. We get back in 3 days. Every time.">
+  <meta name="twitter:title"       content="Better Call Hack | hack.vc">
+  <meta name="twitter:description" content="Drop your deck. We get back in 1 week.">
   <meta name="twitter:image"       content="preview.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -34,10 +32,7 @@
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
+    html, body { height: 100%; overflow: hidden; }
 
     body {
       background: var(--bg);
@@ -47,14 +42,12 @@
       flex-direction: column;
     }
 
-    /* ── subtle green glow ── */
+    /* ── green glow ── */
     body::before {
       content: '';
       position: fixed;
-      top: 20%;
-      left: 30%;
-      width: 700px;
-      height: 500px;
+      top: 20%; left: 30%;
+      width: 700px; height: 500px;
       background: radial-gradient(ellipse, rgba(150,249,155,0.055) 0%, transparent 65%);
       pointer-events: none;
       z-index: 0;
@@ -71,15 +64,65 @@
       z-index: 9999;
     }
 
-    /* ── decorative bg phone ── */
+    /* ── bg phone ── */
     .bg-phone {
       position: fixed;
-      right: -80px;
-      top: 50%;
+      right: -80px; top: 50%;
       transform: translateY(-50%);
       opacity: 0.045;
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* ── floating $ signs ── */
+    .dollar {
+      position: fixed;
+      pointer-events: none;
+      color: var(--green);
+      font-family: 'VT323', monospace;
+      opacity: 0;
+      animation: dollar-fade 4s ease-in-out infinite;
+      z-index: 2;
+      user-select: none;
+    }
+    @keyframes dollar-fade {
+      0%, 100% { opacity: 0; }
+      40%, 60%  { opacity: 0.12; }
+    }
+
+    /* ── cursor trail ── */
+    .trail {
+      position: fixed;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      animation: trail-out 0.5s ease forwards;
+    }
+    @keyframes trail-out {
+      from { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+      to   { opacity: 0;   transform: translate(-50%,-50%) scale(0.1); }
+    }
+
+    /* ── rainbow border on tagrow ── */
+    .tagrow {
+      border-top: 2px solid transparent !important;
+      position: relative;
+    }
+    .tagrow::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #ff0055, #ff8800, #ffff00, var(--green), #00aaff, #aa00ff, #ff0055);
+      background-size: 200% 100%;
+      animation: rainbow-move 3s linear infinite;
+    }
+    @keyframes rainbow-move {
+      from { background-position: 0% 0%; }
+      to   { background-position: 200% 0%; }
     }
 
     /* ── stripes ── */
@@ -88,22 +131,46 @@
       flex-shrink: 0;
       background: repeating-linear-gradient(
         -52deg,
-        var(--green) 0,        var(--green) 26px,
-        var(--bg)    26px,
-        var(--bg)    52px
+        var(--green) 0, var(--green) 26px,
+        var(--bg)    26px, var(--bg) 52px
       );
       background-size: 74px 74px;
       animation: slide 3s linear infinite;
       position: relative;
-      z-index: 1;
+      z-index: 10;
     }
-
     @keyframes slide {
       from { background-position: 0 0; }
       to   { background-position: 74px 0; }
     }
 
-    /* ── main wrap ── */
+    /* ── marquee ── */
+    .marquee-wrap {
+      overflow: hidden;
+      background: rgba(150,249,155,0.06);
+      border-bottom: 1px solid rgba(150,249,155,0.12);
+      padding: 5px 0;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+    .marquee-inner {
+      display: inline-block;
+      white-space: nowrap;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      text-transform: uppercase;
+      opacity: 0.75;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      from { transform: translateX(100vw); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* ── wrap ── */
     .wrap {
       flex: 1;
       max-width: 860px;
@@ -119,7 +186,7 @@
 
     /* ── header ── */
     header {
-      padding: 20px 0 0;
+      padding: 18px 0 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -144,51 +211,63 @@
       text-transform: uppercase;
       color: var(--dim);
     }
-
     .dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--red);
-      box-shadow: 0 0 0 0 rgba(224,0,26,0.7);
       animation: pulse 1.4s ease-in-out infinite;
     }
-
     @keyframes pulse {
       0%  { box-shadow: 0 0 0 0   rgba(224,0,26,0.7); }
       60% { box-shadow: 0 0 0 7px rgba(224,0,26,0); }
       100%{ box-shadow: 0 0 0 0   rgba(224,0,26,0); }
     }
 
-    /* ── main content ── */
+    /* ── new badge ── */
+    .new-badge {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 2px 6px;
+      text-transform: uppercase;
+      margin-left: 8px;
+      animation: blink 0.9s step-end infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* ── main ── */
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 12px 0 8px;
-      gap: clamp(16px, 2.5vh, 28px);
+      padding: 10px 0 6px;
+      gap: clamp(14px, 2.2vh, 26px);
       min-height: 0;
     }
 
     /* ── headline ── */
     .headline {
       font-family: 'Passion One', sans-serif;
-      font-weight: 900;
-      font-size: clamp(68px, 13.5vh, 152px);
+      font-weight: 700;
+      font-size: clamp(64px, 12.5vh, 148px);
       line-height: 0.88;
       letter-spacing: -0.01em;
       text-transform: uppercase;
       color: var(--white);
     }
-
     .headline .green {
       color: var(--green);
       position: relative;
       display: inline-block;
     }
-
-    /* glow */
     .headline .green::after {
       content: attr(data-t);
       position: absolute;
@@ -198,7 +277,6 @@
       opacity: 0.22;
       pointer-events: none;
     }
-
     .headline .period { color: var(--red); }
 
     /* ── tagrow ── */
@@ -208,24 +286,25 @@
       gap: 24px;
       align-items: center;
       border-top: 1px solid var(--border);
-      padding-top: clamp(14px, 2vh, 22px);
+      padding-top: clamp(12px, 1.8vh, 20px);
     }
-
     .tagline {
-      font-size: clamp(14px, 1.8vh, 19px);
+      font-size: clamp(13px, 1.7vh, 18px);
       line-height: 1.55;
       color: var(--white);
       opacity: 0.75;
     }
-
     .tagline strong { color: var(--green); opacity: 1; font-weight: 700; }
-    .tagline em     { color: var(--dim);   font-style: italic; font-size: 0.88em; }
-
-    .badge {
-      text-align: right;
-      flex-shrink: 0;
+    .prompt {
+      font-family: 'VT323', monospace;
+      font-size: 1.2em;
+      color: var(--green);
+      opacity: 0.6;
+      margin-right: 6px;
+      user-select: none;
     }
 
+    .badge { text-align: right; flex-shrink: 0; }
     .badge-num {
       font-family: 'Passion One', sans-serif;
       font-size: clamp(80px, 13vh, 140px);
@@ -233,7 +312,6 @@
       color: var(--green);
       letter-spacing: -0.02em;
     }
-
     .badge-label {
       font-size: 13px;
       letter-spacing: 0.22em;
@@ -244,12 +322,7 @@
     }
 
     /* ── CTA ── */
-    .cta {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      flex-shrink: 0;
-    }
+    .cta { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
 
     .phone-btn {
       display: inline-flex;
@@ -258,18 +331,17 @@
       background: var(--red);
       color: #fff;
       text-decoration: none;
-      padding: clamp(20px, 3vh, 30px) clamp(32px, 4vw, 52px);
+      padding: clamp(18px, 2.8vh, 28px) clamp(28px, 4vw, 50px);
       font-family: 'Passion One', sans-serif;
-      font-size: clamp(28px, 4vh, 40px);
+      font-size: clamp(26px, 3.8vh, 38px);
       letter-spacing: 0.05em;
       text-transform: uppercase;
       transition: transform 0.12s, box-shadow 0.2s;
-      box-shadow: 0 0 0 rgba(224,0,26,0);
       -webkit-tap-highlight-color: transparent;
       position: relative;
       overflow: hidden;
+      box-shadow: 4px 4px 0 #8b0010, inset 1px 1px 0 rgba(255,255,255,0.15);
     }
-
     .phone-btn::after {
       content: '';
       position: absolute;
@@ -277,91 +349,86 @@
       background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
       pointer-events: none;
     }
-
     .phone-btn:hover {
-      transform: translateY(-2px) scale(1.015);
-      box-shadow: 0 8px 40px rgba(224,0,26,0.45), 0 2px 12px rgba(224,0,26,0.3);
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0 #8b0010, inset 1px 1px 0 rgba(255,255,255,0.15), 0 0 30px rgba(224,0,26,0.35);
     }
-
-    .phone-btn:active { transform: scale(0.97); }
-
+    .phone-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0 #8b0010;
+    }
     .phone-icon { display: flex; align-items: center; flex-shrink: 0; }
-
-    .phone-btn:hover .phone-icon {
-      animation: ring 0.5s ease;
-    }
-
+    .phone-btn:hover .phone-icon { animation: ring 0.5s ease; }
     @keyframes ring {
       0%,100% { transform: rotate(0); }
-      20%  { transform: rotate(-20deg); }
-      40%  { transform: rotate(20deg); }
-      60%  { transform: rotate(-12deg); }
-      80%  { transform: rotate(12deg); }
-    }
-
-    .cta-note {
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--dim);
-      line-height: 1.8;
-      opacity: 0.6;
-    }
-
-    .cta-note span {
-      display: block;
-      font-style: italic;
-      text-transform: none;
-      letter-spacing: 0;
-      opacity: 0.7;
-      font-size: 10px;
+      20% { transform: rotate(-20deg); }
+      40% { transform: rotate(20deg); }
+      60% { transform: rotate(-12deg); }
+      80% { transform: rotate(12deg); }
     }
 
     /* ── footer ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 12px 0 16px;
+      padding: 10px 0 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      opacity: 0.28;
       flex-shrink: 0;
     }
-
-    footer span {
+    footer .left {
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
+      opacity: 0.28;
+    }
+    .visitor {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: 0.6;
+    }
+    .visitor-num {
+      color: var(--green);
+      letter-spacing: 0.08em;
+    }
+    .netscape {
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: 0.3;
     }
 
-    /* ── entrance animations ── */
+    /* ── entrance ── */
     [data-fade] {
       opacity: 0;
       transform: translateY(14px);
       animation: fadein 0.5s ease forwards;
     }
-
     [data-fade="1"] { animation-delay: 0.05s; }
     [data-fade="2"] { animation-delay: 0.15s; }
     [data-fade="3"] { animation-delay: 0.28s; }
     [data-fade="4"] { animation-delay: 0.4s;  }
     [data-fade="5"] { animation-delay: 0.52s; }
-
     @keyframes fadein { to { opacity: 1; transform: none; } }
 
     /* ── mobile ── */
     @media (max-width: 580px) {
-      .tagrow    { grid-template-columns: 1fr; gap: 14px; }
-      .badge     { display: flex; align-items: baseline; gap: 10px; text-align: left; }
+      .tagrow  { grid-template-columns: 1fr; gap: 12px; }
+      .badge   { display: flex; align-items: baseline; gap: 10px; text-align: left; }
       .badge-label { margin-top: 0; }
-      .cta       { flex-direction: column; align-items: flex-start; gap: 14px; }
-      .bg-phone  { display: none; }
+      .cta     { flex-direction: column; align-items: flex-start; }
+      .bg-phone { display: none; }
+      .netscape { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- decorative bg phone -->
   <div class="bg-phone">
     <svg width="520" height="520" viewBox="0 0 24 24" fill="#96f99b">
       <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -370,10 +437,16 @@
 
   <div class="stripe"></div>
 
+  <div class="marquee-wrap">
+    <span class="marquee-inner">
+      ✦ &nbsp; WE READ EVERY DECK &nbsp;&nbsp;&nbsp; ✦ &nbsp; SERIOUSLY EVERY SINGLE ONE &nbsp;&nbsp;&nbsp; ✦ &nbsp; EVEN YOURS &nbsp;&nbsp;&nbsp; ✦ &nbsp; ESPECIALLY YOURS &nbsp;&nbsp;&nbsp; ✦ &nbsp; STOP SCROLLING AND SUBMIT &nbsp;&nbsp;&nbsp; ✦ &nbsp; NO COLD INTROS NEEDED &nbsp;&nbsp;&nbsp; ✦ &nbsp; FOUNDED BY PEOPLE WHO REPLY TO EMAILS &nbsp;&nbsp;&nbsp; ✦ &nbsp; WE READ EVERY DECK &nbsp;&nbsp;&nbsp; ✦ &nbsp; SERIOUSLY EVERY SINGLE ONE &nbsp;&nbsp;&nbsp; ✦ &nbsp; EVEN YOURS &nbsp;&nbsp;&nbsp;
+    </span>
+  </div>
+
   <div class="wrap">
 
     <header data-fade="1">
-      <div class="logo">hack.vc</div>
+      <div class="logo">hack.vc <span class="new-badge">new</span></div>
       <div class="live">
         <div class="dot"></div>
         Hotline Active
@@ -382,14 +455,14 @@
 
     <main>
       <h1 class="headline" data-fade="2">
-        FOUNDERS<br>
-        <span class="green" data-t="HOTLINE">HOTLINE</span><span class="period">.</span>
+        BETTER<br>
+        CALL <span class="green" data-t="HACK">HACK</span><span class="period">.</span>
       </h1>
 
       <div class="tagrow" data-fade="3">
         <p class="tagline">
-          We're so <strong>bullish on founders</strong> we actually respond.<br>
-          Drop your deck. <strong>We get back in 1 week.</strong>
+          <span class="prompt">$</span> Need funding? <strong>Better Call Hack.</strong><br>
+          <span class="prompt">$</span> Drop your deck. <strong>Response guaranteed in &lt;1 week.</strong>
         </p>
         <div class="badge">
           <div class="badge-num">1</div>
@@ -400,7 +473,7 @@
       <div class="cta" data-fade="4">
         <a href="https://forms.gle/JrRmckncmJmLySjs8" target="_blank" class="phone-btn">
           <span class="phone-icon">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
             </svg>
           </span>
@@ -410,12 +483,43 @@
     </main>
 
     <footer data-fade="5">
-      <span>© 2025 hack.vc</span>
+      <span class="left">© 2025 hack.vc</span>
+      <span class="visitor">You are visitor <span class="visitor-num" id="vcount">008,472</span></span>
+      <span class="netscape">Best viewed with an open cap table</span>
     </footer>
 
   </div>
 
   <div class="stripe"></div>
+
+  <script>
+    // Floating $ signs
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'dollar';
+      el.textContent = '$';
+      el.style.cssText = `left:${Math.random()*100}vw;top:${Math.random()*100}vh;font-size:${14+Math.random()*36}px;animation-delay:${Math.random()*6}s;animation-duration:${3+Math.random()*4}s`;
+      document.body.appendChild(el);
+    }
+
+    // Cursor trail
+    document.addEventListener('mousemove', e => {
+      const t = document.createElement('div');
+      t.className = 'trail';
+      t.style.left = e.clientX + 'px';
+      t.style.top  = e.clientY + 'px';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 500);
+    });
+
+    // Visitor counter ticks up slowly
+    let count = 8472;
+    setInterval(() => {
+      count += Math.floor(Math.random() * 3);
+      document.getElementById('vcount').textContent =
+        String(count).padStart(6, '0').replace(/(\d{3})$/, ',$1');
+    }, 4000);
+  </script>
 
 </body>
 </html>
