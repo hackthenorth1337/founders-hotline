@@ -227,6 +227,21 @@
       100%{ box-shadow: 0 0 0 0   rgba(224,0,26,0); }
     }
 
+    /* ── sound toggle ── */
+    #sound-btn {
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      background: transparent;
+      border: 1px solid rgba(150,249,155,0.3);
+      color: var(--green);
+      padding: 4px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+    #sound-btn:hover { border-color: var(--green); }
+
     /* ── new badge ── */
     .new-badge {
       display: inline-block;
@@ -470,9 +485,12 @@
 
     <header data-fade="1">
       <div class="logo">hack.vc <span class="new-badge">new</span></div>
-      <div class="live">
-        <div class="dot"></div>
-        Founder Hotline Active
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button id="sound-btn">🔔 SOUND ON</button>
+        <div class="live">
+          <div class="dot"></div>
+          Founder Hotline Active
+        </div>
       </div>
     </header>
 
@@ -572,33 +590,57 @@
       const t = audioCtx.currentTime + 0.05;
 
       // Main phone — front desk
-      phoneRing(audioCtx, t,        900,  0.055);
-      phoneRing(audioCtx, t + 4.2,  900,  0.055);
+      phoneRing(audioCtx, t,        900,  0.18);
+      phoneRing(audioCtx, t + 4.2,  900,  0.18);
 
       // Background phone 1 — across the room
-      phoneRing(audioCtx, t + 1.1,  760,  0.022);
-      phoneRing(audioCtx, t + 5.4,  760,  0.018);
+      phoneRing(audioCtx, t + 1.1,  760,  0.08);
+      phoneRing(audioCtx, t + 5.4,  760,  0.07);
 
       // Background phone 2 — distant
-      phoneRing(audioCtx, t + 2.6,  840,  0.014);
+      phoneRing(audioCtx, t + 2.6,  840,  0.05);
     }
 
-    // Start after first interaction (browser autoplay policy)
-    let started = false;
-    function startAudio() {
-      if (started) return;
-      started = true;
-      audioCtx = new AudioCtx();
-      playOfficeRing();
-      // Keep ringing every ~9s with slight randomness
-      setInterval(() => playOfficeRing(), 9000 + Math.random() * 3000);
+    let audioStarted = false;
+    let audioMuted = false;
+
+    function scheduleNext() {
+      if (audioMuted) return;
+      setTimeout(() => {
+        if (!audioMuted) playOfficeRing();
+        scheduleNext();
+      }, 8000 + Math.random() * 4000);
     }
+
+    async function startAudio() {
+      if (audioStarted) return;
+      audioStarted = true;
+      audioCtx = new AudioCtx();
+      await audioCtx.resume();
+      playOfficeRing();
+      scheduleNext();
+      updateSoundBtn();
+    }
+
+    function updateSoundBtn() {
+      const btn = document.getElementById('sound-btn');
+      if (!btn) return;
+      btn.textContent = audioMuted ? '🔇 SOUND OFF' : '🔔 SOUND ON';
+      btn.style.opacity = audioMuted ? '0.4' : '1';
+    }
+
+    document.getElementById('sound-btn').addEventListener('click', async () => {
+      if (!audioStarted) {
+        await startAudio();
+      } else {
+        audioMuted = !audioMuted;
+        if (!audioMuted) { await audioCtx.resume(); playOfficeRing(); scheduleNext(); }
+        else audioCtx.suspend();
+        updateSoundBtn();
+      }
+    });
 
     document.addEventListener('pointerdown', startAudio, { once: true });
-    document.querySelector('.phone-btn').addEventListener('mouseenter', () => {
-      if (!started) startAudio();
-      else if (audioCtx) playOfficeRing();
-    });
 
     // Visitor counter ticks up slowly
     let count = 8472;
