@@ -553,52 +553,84 @@
       setTimeout(() => t.remove(), 500);
     });
 
-    // Busy office phone ambience — Web Audio API
+    // Busy analog office phones — Web Audio API
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
-    // Synthesise one telephone bell strike
-    function bell(ctx, time, freq, vol) {
-      const harmonics = [1, 2.756, 5.404]; // bell partial series
-      const decays    = [0.9, 0.5, 0.3];
-      harmonics.forEach((h, i) => {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
+    // Single mechanical bell clang — sharp, inharmonic analog bell partials
+    function clang(ctx, time, freq, vol) {
+      [
+        { mult: 1,    amp: 1.0,  decay: 0.55 },
+        { mult: 1.89, amp: 0.6,  decay: 0.35 },
+        { mult: 2.71, amp: 0.35, decay: 0.22 },
+        { mult: 3.54, amp: 0.15, decay: 0.14 },
+      ].forEach(({ mult, amp, decay }) => {
+        const osc = ctx.createOscillator();
+        const g   = ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.value = freq * h;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(vol * (1 - i * 0.25), time + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, time + decays[i]);
-        osc.start(time);
-        osc.stop(time + decays[i] + 0.05);
+        osc.frequency.value = freq * mult;
+        osc.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(0, time);
+        g.gain.linearRampToValueAtTime(vol * amp, time + 0.003);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + decay);
+        osc.start(time); osc.stop(time + decay + 0.02);
       });
+      // Mechanical clapper noise burst
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.03, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      const ng  = ctx.createGain();
+      src.buffer = buf; src.connect(ng); ng.connect(ctx.destination);
+      ng.gain.setValueAtTime(vol * 0.1, time);
+      ng.gain.exponentialRampToValueAtTime(0.0001, time + 0.03);
+      src.start(time);
     }
 
-    // One "brring-brring" ring on a phone at given pitch & volume
-    function phoneRing(ctx, start, freq, vol) {
-      bell(ctx, start,        freq, vol);
-      bell(ctx, start + 0.08, freq, vol * 0.9); // slight echo = mechanical bell
-      bell(ctx, start + 0.52, freq, vol);
-      bell(ctx, start + 0.60, freq, vol * 0.9);
+    // BRRING = two quick clangs (double-strike analog bell)
+    function brring(ctx, time, freq, vol) {
+      clang(ctx, time,        freq, vol);
+      clang(ctx, time + 0.09, freq, vol * 0.8);
     }
 
-    // Busy office: 2-3 phones ringing at different pitches/timings
+    // Wobbly old phone — comedy detuned bell
+    function wobble(ctx, time, vol) {
+      const osc = ctx.createOscillator();
+      const vib = ctx.createOscillator();
+      const vG  = ctx.createGain();
+      const g   = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = 1050;
+      vib.frequency.value = 7; vG.gain.value = 40;
+      vib.connect(vG); vG.connect(osc.frequency);
+      osc.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0, time);
+      g.gain.linearRampToValueAtTime(vol, time + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
+      osc.start(time); vib.start(time);
+      osc.stop(time + 0.55); vib.stop(time + 0.55);
+    }
+
+    // Full busy office sequence — 4 phones, all ringing at once
     function playOfficeRing() {
       if (!audioCtx) return;
       const t = audioCtx.currentTime + 0.05;
 
-      // Main phone — front desk
-      phoneRing(audioCtx, t,        900,  0.18);
-      phoneRing(audioCtx, t + 4.2,  900,  0.18);
+      // Front desk — loud, insistent
+      brring(audioCtx, t,       1200, 0.20);
+      brring(audioCtx, t + 2.2, 1200, 0.20);
 
-      // Background phone 1 — across the room
-      phoneRing(audioCtx, t + 1.1,  760,  0.08);
-      phoneRing(audioCtx, t + 5.4,  760,  0.07);
+      // Mid-room phone
+      brring(audioCtx, t + 0.7, 1050, 0.11);
+      brring(audioCtx, t + 2.9, 1050, 0.11);
 
-      // Background phone 2 — distant
-      phoneRing(audioCtx, t + 2.6,  840,  0.05);
+      // That one annoying wobbly phone in the corner
+      wobble(audioCtx, t + 0.15, 0.08);
+      wobble(audioCtx, t + 0.24, 0.07);
+      wobble(audioCtx, t + 2.35, 0.08);
+      wobble(audioCtx, t + 2.44, 0.07);
+
+      // Distant phone — barely anyone answers it
+      brring(audioCtx, t + 1.4, 1350, 0.05);
     }
 
     let audioStarted = false;
