@@ -535,6 +535,44 @@
       setTimeout(() => t.remove(), 500);
     });
 
+    // Phone ringtone via Web Audio API
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playRing() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      const t = audioCtx.currentTime;
+      // Two short bursts — classic phone ring
+      [0, 0.55].forEach(offset => {
+        const o1 = audioCtx.createOscillator();
+        const o2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        o1.frequency.value = 440;
+        o2.frequency.value = 480;
+        o1.type = o2.type = 'sine';
+        o1.connect(gain); o2.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0, t + offset);
+        gain.gain.linearRampToValueAtTime(0.07, t + offset + 0.02);
+        gain.gain.setValueAtTime(0.07, t + offset + 0.3);
+        gain.gain.linearRampToValueAtTime(0, t + offset + 0.45);
+        o1.start(t + offset); o2.start(t + offset);
+        o1.stop(t + offset + 0.45); o2.stop(t + offset + 0.45);
+      });
+    }
+
+    // Ring on first interaction (browsers block autoplay before that)
+    let hasRung = false;
+    document.addEventListener('pointerdown', () => {
+      if (!hasRung) { hasRung = true; playRing(); }
+    }, { once: true });
+
+    // Ring on button hover
+    document.querySelector('.phone-btn').addEventListener('mouseenter', playRing);
+
+    // Ring every ~12s to keep the hotline energy
+    setInterval(playRing, 12000);
+
     // Visitor counter ticks up slowly
     let count = 8472;
     setInterval(() => {
